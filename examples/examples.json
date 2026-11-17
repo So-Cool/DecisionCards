@@ -1,0 +1,16 @@
+{
+  "examples": [
+    {
+      "label": "Hiking vignette (Fig. 3)",
+      "file": "hiking.json"
+    },
+    {
+      "label": "Orange juice pasteurisation (Fig. 4)",
+      "file": "orange-juice.json"
+    },
+    {
+      "label": "Route selection (Fig. 5)",
+      "file": "route-selection.json"
+    }
+  ]
+}

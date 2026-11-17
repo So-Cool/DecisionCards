@@ -1,0 +1,129 @@
+{
+  "title": "Pasteurising orange juice (Lee & Moray, 1992)",
+  "mode": "full",
+  "notes": "The frame (level 3) is fixed by the engineering of the plant rather than by the experimenter, so the small world arises naturally instead of being constructed. Unlike most contemporary reliance studies, the measured decision sits at level 2: operators decide whether to delegate control of each subsystem, while the automation makes the first-order choices (level 1).",
+  "sections": {
+    "context": [
+      {
+        "l": "Experience",
+        "v": "Students (10 training rounds)",
+        "m": ""
+      },
+      {
+        "l": "Number of decision makers",
+        "v": "1",
+        "m": ""
+      },
+      {
+        "l": "Risk",
+        "v": "Bonus / penalties",
+        "m": ""
+      }
+    ],
+    "frame": [
+      {
+        "l": "Goals",
+        "v": "Performance vs. safety",
+        "m": ""
+      },
+      {
+        "l": "Criteria",
+        "v": "Juice pasteurised",
+        "m": ""
+      },
+      {
+        "l": "Values",
+        "v": "Set by pay scheme",
+        "m": ""
+      },
+      {
+        "l": "Alternatives",
+        "v": "Manual vs. automatic control of feed pump, steam pump, heater",
+        "m": ""
+      }
+    ],
+    "strategy": [
+      {
+        "l": "Rules",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Heuristics",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Delegation",
+        "v": "",
+        "m": ""
+      }
+    ],
+    "choice": [
+      {
+        "l": "Choice",
+        "v": "None, or flow rates and temperatures",
+        "m": ""
+      }
+    ],
+    "ai": [
+      {
+        "l": "None",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Frames",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Informs",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Evaluates",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Recommends",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Chooses",
+        "v": "",
+        "m": ""
+      }
+    ],
+    "evaluation": [
+      {
+        "l": "Joint performance",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Appropriate trust/reliance",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Alignment",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Coverage",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Number & timing of control actions",
+        "v": "",
+        "m": ""
+      }
+    ]
+  }
+}

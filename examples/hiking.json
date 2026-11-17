@@ -1,0 +1,139 @@
+{
+  "title": "Hiking",
+  "mode": "full",
+  "notes": "Reliance was appropriate and the DST’s recommendation was accurate, yet the decision process was poor: there was a misalignment at level 3 (what matters) and level 2 (how to decide).",
+  "sections": {
+    "context": [
+      {
+        "l": "Experience",
+        "v": "Novice hiker",
+        "m": ""
+      },
+      {
+        "l": "Number of decision makers",
+        "v": "1",
+        "m": ""
+      },
+      {
+        "l": "Low- or high-stakes",
+        "v": "High",
+        "m": ""
+      },
+      {
+        "l": "Time pressure",
+        "v": "Yes (storm)",
+        "m": ""
+      },
+      {
+        "l": "Similarity of alternatives",
+        "v": "Paths look similar",
+        "m": ""
+      }
+    ],
+    "frame": [
+      {
+        "l": "Goals",
+        "v": "Get from A to B safely",
+        "m": ""
+      },
+      {
+        "l": "Criteria",
+        "v": "Speed, shelter, footing",
+        "m": ""
+      },
+      {
+        "l": "Values",
+        "v": "Prefer safety over speed",
+        "m": ""
+      },
+      {
+        "l": "Alternatives",
+        "v": "Left, right, turn back, wait",
+        "m": ""
+      }
+    ],
+    "strategy": [
+      {
+        "l": "Rules",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Heuristics",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Delegation",
+        "v": "Fits the small world (distance)",
+        "m": ""
+      }
+    ],
+    "choice": [
+      {
+        "l": "Final choice",
+        "v": "Go left",
+        "m": ""
+      }
+    ],
+    "ai": [
+      {
+        "l": "None",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Frames",
+        "v": "Get from A to B quickly",
+        "m": ""
+      },
+      {
+        "l": "Informs",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Evaluates",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Recommends",
+        "v": "Go left",
+        "m": ""
+      },
+      {
+        "l": "Chooses",
+        "v": "",
+        "m": ""
+      }
+    ],
+    "evaluation": [
+      {
+        "l": "Performance",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Appropriate reliance",
+        "v": "",
+        "m": "ok"
+      },
+      {
+        "l": "Trust",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Alignment",
+        "v": "Misalignments at levels 2 and 3",
+        "m": "no"
+      },
+      {
+        "l": "Coverage",
+        "v": "Criteria / strategies / alternatives",
+        "m": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "title": "Route selection (Salimzadeh et al., 2024)",
+  "mode": "full",
+  "notes": "Goals, criteria, their weighting and the alternatives (level 3) are fixed by the experimenter, as is delegation as the only available strategy (level 2). Uncertainty is operationalised as stated ranges and probabilities, and each task has a correct route, so the task remains a small-world problem. All measured variation and evaluation reside at the level of choice (level 1); alignment at levels 2 and 3 cannot be assessed.",
+  "sections": {
+    "context": [
+      {
+        "l": "Experience",
+        "v": "Lay crowd-workers, trained",
+        "m": ""
+      },
+      {
+        "l": "Number of decision makers",
+        "v": "1",
+        "m": ""
+      },
+      {
+        "l": "Low- or high-stakes",
+        "v": "Low (£0.20 bonus)",
+        "m": ""
+      }
+    ],
+    "frame": [
+      {
+        "l": "Goals",
+        "v": "Minimise travel time + cost",
+        "m": ""
+      },
+      {
+        "l": "Criteria",
+        "v": "4/8/12 constraints",
+        "m": ""
+      },
+      {
+        "l": "Values",
+        "v": "Equal weights (imposed)",
+        "m": ""
+      },
+      {
+        "l": "Alternatives",
+        "v": "Predefined routes",
+        "m": ""
+      }
+    ],
+    "strategy": [
+      {
+        "l": "Rules",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Heuristics",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Delegation",
+        "v": "Imposed",
+        "m": ""
+      }
+    ],
+    "choice": [
+      {
+        "l": "Choice",
+        "v": "“Best” route, before and after advice",
+        "m": ""
+      }
+    ],
+    "ai": [
+      {
+        "l": "None",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Frames",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Informs",
+        "v": "Visual + textual explanations",
+        "m": ""
+      },
+      {
+        "l": "Evaluates",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Recommends",
+        "v": "1 route, 66.7% accuracy",
+        "m": ""
+      },
+      {
+        "l": "Chooses",
+        "v": "",
+        "m": ""
+      }
+    ],
+    "evaluation": [
+      {
+        "l": "Joint performance",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Appropriate reliance",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Trust",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Alignment",
+        "v": "",
+        "m": ""
+      },
+      {
+        "l": "Coverage",
+        "v": "",
+        "m": ""
+      }
+    ]
+  }
+}

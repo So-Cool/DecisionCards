@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision Cards – fill in and print a card</title>
+<meta name="description" content="Fill in a Decision Card (Benk & Sokol) for an AI-assisted decision and save it as a PDF. Everything stays in your browser.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+<style>
+:root{
+  color-scheme: light;
+  --page:#edf0f2; --surface:#ffffff; --ink:#1e2430; --muted:#5e6673; --line:#c9cfd6;
+  --accent:#3a4fa0; --accent-ink:#ffffff;
+  --l3:#f3f5fb; --l2:#e8ecf7; --l1:#dce2f3;
+  --ok:#2f7a55; --no:#b33a3a; --field:#ffffff;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --page:#14171c; --surface:#1c2027; --ink:#e6e9ee; --muted:#9aa3af; --line:#353b45;
+    --accent:#8fa2e8; --accent-ink:#14171c;
+    --l3:#202634; --l2:#262e44; --l1:#2d3753;
+    --ok:#6cc79a; --no:#ef8a8a; --field:#161a20;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--ink);font:15px/1.5 var(--sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Top bar */
+.top{padding:20px 24px 16px;display:flex;flex-wrap:wrap;gap:16px 24px;align-items:end;justify-content:space-between;border-bottom:1px solid var(--line);background:var(--surface)}
+.top h1{margin:0;font:600 26px/1.15 var(--serif);letter-spacing:-.01em}
+.top p{margin:4px 0 0;color:var(--muted);max-width:60ch}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);padding:7px 12px;border-radius:6px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+select.btn{padding-right:8px}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:24px;max-width:1500px;margin:0 auto}
+@media (max-width:980px){.layout{grid-template-columns:minmax(0,1fr)}}
+
+/* Editor */
+.editor{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.panel h2{margin:0;font:600 17px/1.3 var(--serif);display:flex;gap:8px;align-items:baseline}
+.panel h2 .lvl{font-size:13px;color:var(--muted);font-family:var(--sans);font-weight:500}
+.panel .q{margin:2px 0 0;color:var(--muted)}
+.panel .hint{margin:6px 0 10px;font-size:13.5px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:13px;color:var(--muted)}
+input[type=text],textarea{width:100%;background:var(--field);border:1px solid var(--line);border-radius:5px;padding:6px 8px}
+textarea{min-height:70px;resize:vertical}
+.rows{display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:minmax(90px,.8fr) minmax(0,1.6fr) 34px 34px;gap:6px;align-items:center}
+.row input[readonly]{background:transparent;border-color:transparent;font-weight:600;padding-left:0}
+.icon{width:34px;height:32px;border:1px solid var(--line);border-radius:5px;background:var(--surface);cursor:pointer;line-height:1}
+.icon.ok{color:var(--ok);border-color:var(--ok);font-weight:700}
+.icon.no{color:var(--no);border-color:var(--no);font-weight:700}
+.icon.del{color:var(--muted)}
+.icon.del:hover{color:var(--no)}
+.adders{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.adders .btn{font-size:13.5px;padding:5px 10px}
+.switch{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.switch input{margin-top:4px}
+.section-hidden{opacity:.5}
+
+/* Preview / card */
+.preview{position:sticky;top:16px;align-self:start}
+@media (max-width:980px){.preview{position:static}}
+.preview-head{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 8px;color:var(--muted);font-size:13.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:28px 30px;font-family:var(--serif);box-shadow:0 1px 0 var(--line), 0 12px 32px -18px rgba(30,36,48,.35)}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+.card-head h2{margin:0;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.card-head .t{font-size:17px;color:var(--muted);font-style:italic;text-align:right}
+.blk h3{margin:0;font-size:16px;font-weight:600}
+.blk .cq{margin:0 0 4px;font-size:13.5px;color:var(--muted);font-style:italic}
+.blk ul{list-style:none;margin:0;padding:0}
+.blk li{display:grid;grid-template-columns:18px minmax(0,auto) 1fr auto;gap:6px;align-items:baseline;padding:2px 0;font-size:14px;line-height:1.4}
+.blk li .h{color:var(--muted)}
+.blk li .lab{font-family:var(--sans);font-size:13px;font-weight:600;white-space:nowrap}
+.blk li .val{font-family:var(--sans);font-size:13px}
+.blk li .val:not(:empty)::before{content:"";}
+.blk li.empty .lab{font-weight:400;color:var(--muted)}
+.blk li .mk{font-family:var(--sans);font-weight:700}
+.blk li .mk.ok{color:var(--ok)} .blk li .mk.no{color:var(--no)}
+.ctx{margin-bottom:14px}
+
+/* Nested decision levels: frame contains strategy contains choice */
+.nest{position:relative;border:1px solid var(--line);border-radius:6px;padding:12px 14px 12px 48px;background:var(--l3);margin-bottom:14px}
+.nest .nest{background:var(--l2);margin:10px 0 0 -34px;padding-left:48px}
+.nest .nest .nest{background:var(--l1)}
+.nest > .num{position:absolute;left:12px;top:8px;font:600 26px/1 var(--serif);color:var(--accent)}
+.nest-cap{font-family:var(--sans);font-size:12px;color:var(--muted);margin:-6px 0 8px}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bottom.single{grid-template-columns:1fr}
+.boxed{border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.agency{font-family:var(--sans);font-size:12px;color:var(--muted);margin-top:4px}
+.ai li.empty .lab{color:var(--muted)}
+.notes{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:14px}
+.notes h3{font-size:14px;margin:0 0 2px}
+.notes p{margin:0;white-space:pre-wrap}
+.cite{margin-top:14px;font-family:var(--sans);font-size:11px;color:var(--muted)}
+@media (max-width:560px){
+  .card{padding:20px 16px}
+  .bottom{grid-template-columns:1fr}
+  .nest{padding-left:40px}
+  .nest .nest{margin-left:-28px;padding-left:40px}
+}
+.print-hint{font-size:13px;color:var(--muted);margin:10px 2px 0}
+
+footer{max-width:1500px;margin:0 auto;padding:8px 24px 32px;color:var(--muted);font-size:13px}
+footer p{margin:4px 0;max-width:90ch}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* Print: only the card, always in light colours */
+@page{size:A4;margin:12mm}
+@media print{
+  :root{
+    color-scheme: light;
+    --page:#ffffff; --surface:#ffffff; --ink:#1e2430; --muted:#5e6673; --line:#c9cfd6;
+    --accent:#3a4fa0; --l3:#f3f5fb; --l2:#e8ecf7; --l1:#dce2f3; --ok:#2f7a55; --no:#b33a3a;
+  }
+  body{background:#fff}
+  .top,.editor,footer,.print-hint,.preview-head,.toast{display:none !important}
+  .layout{display:block;padding:0;max-width:none}
+  .preview{position:static}
+  .card{border:none;box-shadow:none;padding:0}
+  .card,.nest,.boxed{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .nest,.boxed,.ctx,.notes{break-inside:avoid}
+  .bottom{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>Decision Cards</h1>
+    <p>Map a decision problem across frame, strategy and choice, record the role of AI and save the card as a PDF. Nothing you type leaves your browser.</p>
+  </div>
+  <div class="toolbar">
+    <select class="btn" id="exampleSelect" aria-label="Load an example card">
+      <option value="">Load an example…</option>
+    </select>
+    <button class="btn" id="newBtn">New blank card</button>
+    <button class="btn" id="shareBtn">Copy share link</button>
+    <button class="btn" id="exportBtn">Export JSON</button>
+    <button class="btn" id="importBtn">Import JSON</button>
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <button class="btn primary" id="printBtn">Save as PDF</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="editor" id="editor" aria-label="Card editor"></section>
+  <section class="preview" aria-label="Card preview">
+    <div class="preview-head"><span>Preview</span><span id="saveState"></span></div>
+    <div class="card" id="card"></div>
+    <p class="print-hint">“Save as PDF” opens your browser’s print dialog. Choose “Save as PDF” as the destination and turn off headers and footers for a clean page.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Based on Michaela Benk and Kacper Sokol, <em>Decision Cards: An Analytical Tool for Mapping Decision Problems and Designing AI Support Systems</em>.<!-- Add a link to the paper here --></p>
+  <p>The example cards are illustrations drawn from published descriptions of prior studies, not authoritative specifications of those systems. Your draft is kept in this browser only; share links contain the whole card in the URL.</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const AI_ROLES = ["None", "Frames", "Informs", "Evaluates", "Recommends", "Chooses"];
+
+  // Second-order strategies (Sunstein & Ullmann-Margalit), as in Table 1 of the paper
+  const STRATEGIES = [
+    ["Rules", "Adopt a rule in advance for challenging or repetitive decisions."],
+    ["Heuristics", "Rely on a mental shortcut that bypasses case-by-case choices."],
+    ["Presumptions", "Act on an assumption until certain circumstances arise, then reconsider."],
+    ["Standards", "Adopt a vague, value-based criterion that structures judgement without settling it."],
+    ["Routines", "Rely on a habit-like but deliberate behavioural pattern."],
+    ["Small steps", "Make a narrow, reversible decision now and defer the larger question."],
+    ["Picking", "Decide on an arbitrary or random basis rather than for a reason."],
+    ["Delegation", "Hand the decision to another party, such as a person or an AI tool."]
+  ];
+  const STRAT_DESC = Object.fromEntries(STRATEGIES);
+
+  const SECTIONS = [
+    { key: "context", title: "Context", q: "What factors affect the decision process?",
+      hint: "Who decides, with what experience, under what time pressure and stakes? How similar are the alternatives?" },
+    { key: "frame", level: 3, title: "Frame", q: "What should be considered to make the choice?",
+      hint: "Who set these goals, criteria and alternatives: the decision-maker, the designer or the experimenter? What has been left out?" },
+    { key: "strategy", level: 2, title: "Strategy", q: "How is the choice made?",
+      hint: "Which strategies are available? Is delegating to AI one option among several, or is it imposed? Does it fit the problem as framed?" },
+    { key: "choice", level: 1, title: "Choice", q: "What is the best choice among alternatives?",
+      hint: "Is there a ground truth for the choice? Could it shift as preferences or the situation change?" },
+    { key: "ai", title: "Role of AI", q: "What type of support does the AI offer?", aiOnly: true, fixed: true,
+      hint: "At which level does the AI act? Does it implicitly frame the problem, for example by choosing the criterion it optimises?" },
+    { key: "evaluation", title: "Evaluation", q: "How is the decision support evaluated?", aiOnly: true,
+      hint: "Which levels does the evaluation reach? What can it not establish? Use ✓ and ✗ to record findings." }
+  ];
+
+  const R = (l, v = "", m = "") => ({ l, v, m });
+  const aiRows = (o = {}) => AI_ROLES.map(r => R(r, o[r] || ""));
+
+  function blank() {
+    return {
+      title: "", mode: "full", notes: "",
+      sections: {
+        context: [R("Experience"), R("Number of decision makers"), R("Time pressure"), R("Similarity of alternatives")],
+        frame: [R("Goals"), R("Criteria"), R("Values"), R("Alternatives")],
+        strategy: [R("Rules"), R("Heuristics"), R("Delegation")],
+        choice: [R("Final choice")],
+        ai: aiRows(),
+        evaluation: [R("Joint performance"), R("Appropriate trust/reliance"), R("Alignment"), R("Coverage")]
+      }
+    };
+  }
+
+  // Example cards live in examples/ next to this page. examples/examples.json lists them:
+  // { "examples": [ { "label": "Shown in the dropdown", "file": "my-card.json" } ] }
+  // Each card file has the same format as "Export JSON", so an exported card can be added as is.
+  const EXAMPLES_DIR = "examples/";
+  let exampleList = [];
+
+  async function fetchJSON(path) {
+    const res = await fetch(path, { cache: "no-cache" });
+    if (!res.ok) throw new Error(`${res.status} for ${path}`);
+    return res.json();
+  }
+  async function loadManifest() {
+    const sel = $("#exampleSelect");
+    try {
+      const m = await fetchJSON(EXAMPLES_DIR + "examples.json");
+      exampleList = (Array.isArray(m.examples) ? m.examples : []).filter(x => x && typeof x.file === "string");
+      exampleList.forEach((x, i) => sel.append(el("option", { value: String(i) }, x.label || x.file)));
+    } catch (e) {
+      console.warn("Examples could not be loaded:", e);
+      sel.disabled = true;
+      sel.title = location.protocol === "file:"
+        ? "Examples load only when the page is served over HTTP (e.g. GitHub Pages or a local server)"
+        : "Examples could not be loaded";
+    }
+  }
+  async function loadExample(i, quiet = false) {
+    const x = exampleList[i];
+    if (!x) return;
+    try {
+      load(await fetchJSON(EXAMPLES_DIR + x.file));
+      if (!quiet) toast("Example loaded");
+    } catch (e) {
+      console.warn(e);
+      toast(`Couldn’t load ${x.file}`);
+    }
+  }
+
+  // ---------- state helpers ----------
+  const str = x => (typeof x === "string" ? x : x == null ? "" : String(x));
+  function normalise(o) {
+    const base = blank();
+    if (!o || typeof o !== "object") return base;
+    const out = { title: str(o.title), mode: o.mode === "decider" ? "decider" : "full", notes: str(o.notes), sections: {} };
+    for (const s of SECTIONS) {
+      const rows = o.sections && Array.isArray(o.sections[s.key]) ? o.sections[s.key] : null;
+      if (s.key === "ai") {
+        const map = {};
+        (rows || []).forEach(r => { if (r && AI_ROLES.includes(r.l)) map[r.l] = r; });
+        out.sections.ai = AI_ROLES.map(n => R(n, str(map[n] && map[n].v), (map[n] && ["ok", "no"].includes(map[n].m)) ? map[n].m : ""));
+      } else {
+        out.sections[s.key] = rows
+          ? rows.filter(r => r && typeof r === "object").map(r => R(str(r.l), str(r.v), ["ok", "no"].includes(r.m) ? r.m : ""))
+          : base.sections[s.key];
+      }
+    }
+    return out;
+  }
+
+  const STORE_KEY = "decision-card-draft-v1";
+  let state;
+  let saveTimer = null;
+
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(state));
+        $("#saveState").textContent = "Draft saved in this browser";
+      } catch (e) {
+        $("#saveState").textContent = "Draft can’t be saved in this browser";
+      }
+    }, 300);
+  }
+
+  // URL-safe base64 for share links
+  function b64enc(s) {
+    const bytes = new TextEncoder().encode(s);
+    let bin = "";
+    bytes.forEach(b => { bin += String.fromCharCode(b); });
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64dec(s) {
+    s = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    const bin = atob(s);
+    return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+  }
+
+  // ---------- DOM helpers ----------
+  const $ = sel => document.querySelector(sel);
+  function el(tag, attrs = {}, ...kids) {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else if (v === true) n.setAttribute(k, "");
+      else if (v !== false && v != null) n.setAttribute(k, v);
+    }
+    kids.flat().forEach(c => { if (c != null) n.append(c.nodeType ? c : document.createTextNode(c)); });
+    return n;
+  }
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+  const MARKS = ["", "ok", "no"];
+  const MARK_TEXT = { "": "·", ok: "✓", no: "✗" };
+  const MARK_LABEL = { "": "No mark", ok: "Marked ✓", no: "Marked ✗" };
+
+  // ---------- editor ----------
+  function changed() { renderCard(); save(); }
+
+  function renderEditor() {
+    const ed = $("#editor");
+    ed.replaceChildren();
+
+    ed.append(el("div", { class: "panel" },
+      el("div", { class: "field" },
+        el("label", { for: "cardTitle" }, "Card title"),
+        el("input", { type: "text", id: "cardTitle", value: state.title, placeholder: "e.g. Loan approval support",
+          oninput: e => { state.title = e.target.value; changed(); } })),
+      el("label", { class: "switch" },
+        el("input", { type: "checkbox", checked: state.mode === "decider",
+          onchange: e => { state.mode = e.target.checked ? "decider" : "full"; renderEditor(); changed(); } }),
+        el("span", {}, "Decision-maker mode: hide the role of AI and evaluation, and keep the card as a reusable guide for recurring decisions."))
+    ));
+
+    for (const s of SECTIONS) {
+      const hidden = s.aiOnly && state.mode === "decider";
+      const rows = state.sections[s.key];
+      const panel = el("div", { class: "panel" + (hidden ? " section-hidden" : "") },
+        el("h2", {}, s.title, s.level ? el("span", { class: "lvl" }, `Level ${s.level}`) : null,
+          hidden ? el("span", { class: "lvl" }, "hidden in decision-maker mode") : null),
+        el("p", { class: "q" }, s.q),
+        el("p", { class: "hint" }, s.hint));
+
+      const list = el("div", { class: "rows" });
+      rows.forEach((r, i) => {
+        const markBtn = el("button", {
+          class: "icon " + r.m, type: "button", title: MARK_LABEL[r.m] + " (click to change)",
+          "aria-label": `${MARK_LABEL[r.m]} for ${r.l || "row"}. Click to change.`,
+          onclick: () => { r.m = MARKS[(MARKS.indexOf(r.m) + 1) % 3]; renderEditor(); changed(); }
+        }, MARK_TEXT[r.m]);
+        const delBtn = s.fixed ? el("span") : el("button", {
+          class: "icon del", type: "button", title: "Remove row", "aria-label": `Remove ${r.l || "row"}`,
+          onclick: () => { rows.splice(i, 1); renderEditor(); changed(); }
+        }, "×");
+        list.append(el("div", { class: "row" },
+          el("input", { type: "text", value: r.l, readonly: !!s.fixed, "aria-label": `${s.title} item name`,
+            placeholder: "Item", title: STRAT_DESC[r.l] || null,
+            oninput: e => { r.l = e.target.value; changed(); } }),
+          el("input", { type: "text", value: r.v, "aria-label": `${s.title}: ${r.l || "item"} details`,
+            placeholder: s.key === "strategy" ? (STRAT_DESC[r.l] || "Notes") : "Details",
+            oninput: e => { r.v = e.target.value; changed(); } }),
+          markBtn, delBtn));
+      });
+      panel.append(list);
+
+      if (!s.fixed) {
+        const adders = el("div", { class: "adders" },
+          el("button", { class: "btn", type: "button",
+            onclick: () => { rows.push(R("")); renderEditor(); changed();
+              const inputs = $("#editor").querySelectorAll(`[aria-label="${s.title} item name"]`);
+              if (inputs.length) inputs[inputs.length - 1].focus(); } }, "Add row"));
+        if (s.key === "strategy") {
+          const present = new Set(rows.map(r => r.l));
+          const missing = STRATEGIES.filter(([n]) => !present.has(n));
+          if (missing.length) {
+            const sel = el("select", { class: "btn", "aria-label": "Add a strategy from the paper",
+              onchange: e => { if (e.target.value) { rows.push(R(e.target.value)); renderEditor(); changed(); } } },
+              el("option", { value: "" }, "Add a strategy…"),
+              missing.map(([n, d]) => el("option", { value: n, title: d }, n)));
+            adders.append(sel);
+          }
+        }
+        panel.append(adders);
+      }
+      ed.append(panel);
+    }
+
+    ed.append(el("div", { class: "panel" },
+      el("div", { class: "field" },
+        el("label", { for: "cardNotes" }, "Notes (shown under the card)"),
+        el("textarea", { id: "cardNotes", placeholder: "What does the card reveal? Where are the misalignments?",
+          oninput: e => { state.notes = e.target.value; changed(); } }, state.notes))));
+  }
+
+  // ---------- card preview ----------
+  function listFor(rows) {
+    return el("ul", {}, rows.filter(r => r.l || r.v).map(r =>
+      el("li", { class: r.v || r.m ? "" : "empty" },
+        el("span", { class: "h", "aria-hidden": "true" }, "☞"),
+        el("span", { class: "lab" }, r.l),
+        el("span", { class: "val" }, r.v),
+        el("span", { class: "mk " + r.m }, r.m ? MARK_TEXT[r.m] : ""))));
+  }
+  function block(s, extraClass = "") {
+    return el("div", { class: "blk " + extraClass },
+      el("h3", {}, s.title), el("p", { class: "cq" }, s.q), listFor(state.sections[s.key]));
+  }
+  const sec = k => SECTIONS.find(s => s.key === k);
+
+  function renderCard() {
+    const card = $("#card");
+    card.replaceChildren();
+    card.append(el("div", { class: "card-head" },
+      el("h2", {}, "Decision Card"),
+      el("span", { class: "t" }, state.title)));
+
+    card.append(block(sec("context"), "ctx"));
+
+    // Nested levels: choice sits inside strategy, which sits inside frame
+    const mk = (k, inner) => {
+      const s = sec(k);
+      return el("div", { class: "nest" },
+        el("span", { class: "num", "aria-label": `Level ${s.level}` }, String(s.level)),
+        block(s), inner);
+    };
+    card.append(mk("frame", mk("strategy", mk("choice", null))));
+
+    if (state.mode !== "decider") {
+      const ai = block(sec("ai"), "ai");
+      ai.append(el("div", { class: "agency" }, "↓ increasing AI agency"));
+      card.append(el("div", { class: "bottom" },
+        el("div", { class: "boxed" }, ai),
+        el("div", { class: "boxed" }, block(sec("evaluation")))));
+    }
+
+    if (state.notes.trim()) {
+      card.append(el("div", { class: "notes" }, el("h3", {}, "Notes"), el("p", {}, state.notes)));
+    }
+    card.append(el("div", { class: "cite" },
+      "Decision Card template: Benk & Sokol, “Decision Cards: An Analytical Tool for Mapping Decision Problems and Designing AI Support Systems.”"));
+  }
+
+  function load(newState) {
+    state = normalise(newState);
+    renderEditor();
+    renderCard();
+    save();
+  }
+
+  // ---------- toolbar ----------
+  $("#exampleSelect").addEventListener("change", e => {
+    const i = e.target.value;
+    e.target.value = "";
+    if (i !== "") loadExample(Number(i));
+  });
+  $("#newBtn").addEventListener("click", () => {
+    if (confirm("Start a new blank card? Your current draft will be replaced.")) { load(blank()); toast("New blank card"); }
+  });
+  $("#shareBtn").addEventListener("click", async () => {
+    const url = location.href.split("#")[0] + "#card=" + b64enc(JSON.stringify(state));
+    try { await navigator.clipboard.writeText(url); toast("Share link copied"); }
+    catch (e) { prompt("Copy this link:", url); }
+  });
+  const slug = () => (state.title || "decision-card").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "decision-card";
+  $("#exportBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const a = el("a", { href: URL.createObjectURL(blob), download: slug() + ".json" });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast("JSON exported");
+  });
+  $("#importBtn").addEventListener("click", () => $("#importFile").click());
+  $("#importFile").addEventListener("change", e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { load(JSON.parse(reader.result)); toast("Card imported"); }
+      catch (err) { toast("Import failed: the file isn’t a valid Decision Card JSON"); }
+    };
+    reader.readAsText(f);
+    e.target.value = "";
+  });
+  $("#printBtn").addEventListener("click", () => {
+    const old = document.title;
+    document.title = slug(); // suggested PDF file name
+    window.print();
+    document.title = old;
+  });
+
+  // ---------- start ----------
+  let initial = null;
+  if (location.hash.startsWith("#card=")) {
+    try { initial = JSON.parse(b64dec(location.hash.slice(6))); }
+    catch (e) { toast("The share link couldn’t be read"); }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+  if (!initial) {
+    try { const d = localStorage.getItem(STORE_KEY); if (d) initial = JSON.parse(d); } catch (e) {}
+  }
+  load(initial || blank());
+  // First visit: show the first example from the manifest
+  loadManifest().then(() => { if (!initial && exampleList.length) loadExample(0, true); });
+})();
+</script>
+</body>
+</html>
